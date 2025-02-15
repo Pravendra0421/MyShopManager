@@ -55,8 +55,11 @@ npm run dev  # Start frontend on localhost:5173
 ---
 
 📊 Dashboard Features
+
 📌 Real-time Stock Update - When an item is sold, stock updates automatically.
+
 📈 Total Revenue Calculation - Shopkeeper can see total earnings.
+
 📅 7-Day Sales Data - View past week's sales trends.
 
 
