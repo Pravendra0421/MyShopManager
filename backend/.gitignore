@@ -1,0 +1,80 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.supabase/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+.log
+logfile
+
+# Build artifacts
+dist/
+build/
+.cache/
+.vite/
+
+# Editor & System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+*.iml
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage & Debug
+coverage/
+.nyc_output/
+jest/
+cypress/screenshots/
+cypress/videos/
+debug.log
+.out/
+*.bak
+
+# Git & Dependency security
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# React specific
+public/*.cache
+public/build/
+public/static/
+*.webmanifest
+firebase.json
+
+# Next.js
+.next/
+out/
+
+# Express & Backend specific
+/uploads/
+tmp/
+data/
+
+# Supabase specific
+supabase/config.toml
+supabase/.temp/
+supabase/functions/node_modules/
+supabase/migrations/
+supabase/db/*
+supabase/secrets/*
