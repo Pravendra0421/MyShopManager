@@ -9,6 +9,7 @@ dotenv.config();
 const app= express();
 const PORT = process.env.PORT || 5000;
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow frontend origin
     methods: ['GET', 'POST'], // Corrected key (methods, not method)
