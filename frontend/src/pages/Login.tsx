@@ -18,8 +18,9 @@ const Login = () => {
     // console.log(input1);
     try {
       const Response=await axios.post("http://localhost:3000/auth/login",input1);
+      localStorage.setItem("token",Response.data.accessToken);
       console.log("signup successfull:",Response.data);
-      navigate('/dashboard')
+      navigate('/')
     } catch (error) {
       console.log(error);
     }
