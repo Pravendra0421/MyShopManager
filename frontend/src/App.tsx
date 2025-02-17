@@ -5,6 +5,7 @@ import EmailConfirmation from "./pages/EmailConfirmation";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Logout from "./pages/Logout";
+import AddItem from "./pages/AddItem";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/additem" element={<AddItem/>}/>
           <Route path="/logout" element={<Logout />} />
         </Route>
       </Routes>
