@@ -1,25 +1,80 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
-import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { addItem } from "../services/Api.ts"; 
+import { predefineItems,ItemType } from "../data/data.ts";
 
 const AddItem = () => {
-    const [input, setInput] = useState<{ name: string; price: number; stock: number; image: File | null }>({
+    const [input, setInput] = useState<{ 
+        name: string; 
+        price: number; 
+        stock: number; 
+        image: File | null; 
+        image_url?: string; // Add this line
+        type: ItemType;
+    }>({
         name: "",
         price: 0,
         stock: 0,
-        image: null
+        image: null,
+        image_url: "", // Initialize with an empty string
+        type: "fruits"
     });
-    const handleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
-        const { name, value, type, files } = e.target;
+    const [suggestions, setSuggestions] = useState<{ name: string; image: string }[]>([]);
 
-        if (type === "file" && files) {
-            setInput((prev) => ({ ...prev, image: files[0] }));
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target;
+    
+        if (type === "file") {
+            const fileInput = e.target as HTMLInputElement;
+            const file = fileInput.files?.[0];
+            if (file) {
+                setInput((prev) => ({ ...prev, image: file })); // Allow user to upload their image
+            }
         } else {
             setInput((prev) => ({ ...prev, [name]: type === "number" ? Number(value) : value }));
+    
+            if (name === "name") {
+                updateSuggestions(value);
+            }
         }
-
     };
-    //handle form submission
+    const updateSuggestions = (value: string) => {
+        // If input is empty, show the full list of items based on selected type
+        if (value.trim() === "") {
+            setSuggestions(predefineItems[input.type]);
+            return;
+        }
+    
+        // Filter items based on input value
+        const filteredSuggestions = predefineItems[input.type].filter((item) =>
+            item.name.toLowerCase().includes(value.toLowerCase())
+        );
+    
+        setSuggestions(filteredSuggestions);
+    };
+    
+    const handleSuggestionClick = (suggestion: { name: string; image: string }) => {
+        setInput((prev) => ({ 
+            ...prev, 
+            name: suggestion.name, 
+            image_url: suggestion.image, // Store predefined image URL
+            image: null 
+        }));
+        setSuggestions([]);
+    };
+
+    const mutation = useMutation({
+        mutationFn: (formData: FormData) => addItem(formData), 
+        onSuccess: () => {
+            alert("Item added successfully!");
+            setInput({ name: "", price: 0, stock: 0, image: null,type:"fruits" });
+        },
+        onError: () => {
+            alert("Failed to add item!");
+        }
+    });
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
     
@@ -30,73 +85,109 @@ const AddItem = () => {
     
         if (input.image) {
             formData.append("image", input.image);
+        } else if (input.image_url) {
+            formData.append("image_url", input.image_url); // Send predefined image URL
         }
     
-        try {
-            await axios.post("http://localhost:3000/item/add", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-    
-            // console.log("Server Response:", response.data);
-            alert("Item added successfully!");
-    
-        } catch (error) {
-            console.error("Error adding item:", error);
-            alert("Failed to add item!");
-        }
+        mutation.mutate(formData); 
     };
 
     return (
         <>
-        <Navbar/>
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="max-w-xl h-[600px] bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 p-4">
-                {/* <img className="w-full h-56 object-cover" src={image} alt="Product Preview" /> */}
-                <div className="p-4">
-                {input.image && (
-                     <img src={URL.createObjectURL(input.image)} alt="Preview" className="w-10 h-10 object-cover rounded-lg mb-5" />
-                     )}
-                    <h2 className="text-xl text-center mb-10 font-semibold text-gray-800">Add New Item</h2>
-                    <form onSubmit={handleSubmit} className="mt-4 mb-10 ">
-                        <h3 className="mb-2"> Name:</h3>
-                        <input 
-                        type="text" 
-                        name="name" 
-                        onChange={handleChange}
-                        value={input.name}
-                        placeholder="Enter Name" 
-                        className="w-full px-3 py-2 border rounded-lg focus:outline-none mb-5 focus:ring-2 focus:ring-blue-500" 
-                        required  />
-                        <h3 className="mb-2">Price:</h3>
-                        <input type="number"
-                         name="price" 
-                         value={input.price}
-                         onChange={handleChange}
-                         placeholder="Enter Price" 
-                         className="w-full  px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                         required  />
-                        <h3 className="mb-2">Stock:</h3>
-                        <input type="number" 
-                        name="stock" 
-                        placeholder="Enter Stock" 
-                        className="w-full mb-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                        value={input.stock}
-                        onChange={handleChange}
-                        required />
-                        <h3 className="mb-2">Image:</h3>
-                        <input type="file" 
-                        name="image"
-                        onChange={handleChange}
-                        className="w-full mt-2 px-3 py-2 border rounded-lg mb-7 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                        accept="image/*" required  />
-                        <button type="submit" 
-                        className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Submit</button>
+            <Navbar />
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <div className="max-w-xl h-auto bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 p-6">
+                    <h2 className="text-xl text-center mb-6 font-semibold text-gray-800">Add New Item</h2>
+                    <form onSubmit={handleSubmit} className="mt-4">
+                        <label className="block font-medium">Type:</label>
+                        <select
+                            name="type"
+                            value={input.type}
+                            onChange={handleChange}
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none mb-5 focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="fruits">Fruits</option>
+                            <option value="vegetables">Vegetables</option>
+                        </select>
+
+                        <label className="block font-medium">Name:</label>
+                        <input
+                            type="text"
+                            name="name"
+                            onChange={handleChange}
+                            onFocus={()=>updateSuggestions("")}
+                            value={input.name}
+                            placeholder="Enter Name"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none mb-2 focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+                        {suggestions.length > 0 && (
+                            <ul className="border border-gray-300 bg-white rounded-lg shadow-md max-h-32 overflow-auto mt-1">
+                                {suggestions.map((item, index) => (
+                                    <li
+                                        key={index}
+                                        className="px-3 py-2 hover:bg-gray-200 cursor-pointer flex items-center"
+                                        onClick={() => handleSuggestionClick(item)}
+                                    >
+                                        <img src={item.image} alt={item.name} className="w-6 h-6 rounded-full mr-2" />
+                                        {item.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+
+                        <label className="block font-medium mt-4">Price:</label>
+                        <input
+                            type="number"
+                            name="price"
+                            value={input.price}
+                            onChange={handleChange}
+                            placeholder="Enter Price"
+                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        />
+
+                        <label className="block font-medium mt-4">Stock:</label>
+                        <input
+                            type="number"
+                            name="stock"
+                            placeholder="Enter Stock"
+                            className="w-full mb-2 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={input.stock}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label className="block font-medium mt-4">Image:</label>
+                        <input
+                            type="file"
+                            name="image"
+                            onChange={handleChange}
+                            className="w-full mt-2 px-3 py-2 border rounded-lg mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            accept="image/*"
+                        />
+
+                            {input.image ? (
+                                <div className="flex justify-center my-3">
+                                    <img src={URL.createObjectURL(input.image)} alt="Preview" className="w-24 h-24 object-cover rounded-lg shadow-md" />
+                                </div>
+                            ) : input.image_url ? (
+                                <div className="flex justify-center my-3">
+                                    <img src={input.image_url} alt="Predefined" className="w-24 h-24 object-cover rounded-lg shadow-md" />
+                                </div>
+                            ) : null}
+
+
+                        <button
+                            type="submit"
+                            className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                            disabled={mutation.isPending}
+                        >
+                            {mutation.isPending ? "Submitting..." : "Submit"}
+                        </button>
                     </form>
                 </div>
             </div>
-        </div>
         </>
     );
 };
