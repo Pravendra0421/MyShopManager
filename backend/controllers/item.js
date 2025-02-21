@@ -20,6 +20,20 @@ export const getAllitems= async(req,res)=>{
         res.json(data);
     }
 };
+export const getItemById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { data, error } = await supabase.from("items").select("*").eq("id", id).single();
+
+        if (error || !data) {
+            return res.status(404).json({ success: false, message: "Item not found" });
+        }
+
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+    }
+};
 // add new item 
 export const addItem = async (req, res) => {
     try {

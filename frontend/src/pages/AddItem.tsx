@@ -10,7 +10,7 @@ const AddItem = () => {
         price: number; 
         stock: number; 
         image: File | null; 
-        image_url?: string; // Add this line
+        image_url?: string; 
         type: ItemType;
     }>({
         name: "",
@@ -36,6 +36,14 @@ const AddItem = () => {
     
             if (name === "name") {
                 updateSuggestions(value);
+                 // Check if the name exists in predefined items
+            const foundItem = predefineItems[input.type].find(item => item.name.toLowerCase() === value.toLowerCase());
+
+            if (foundItem) {
+                setInput(prev => ({ ...prev, image_url: foundItem.image, image: null })); // Set predefined image
+            } else {
+                setInput(prev => ({ ...prev, image_url: "", image: null })); // Allow manual image upload
+            }
             }
         }
     };
@@ -96,7 +104,7 @@ const AddItem = () => {
         <>
             <Navbar />
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <div className="max-w-xl h-auto bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 hover:scale-105 p-6">
+                <div className="max-w-xl h-auto bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 p-6">
                     <h2 className="text-xl text-center mb-6 font-semibold text-gray-800">Add New Item</h2>
                     <form onSubmit={handleSubmit} className="mt-4">
                         <label className="block font-medium">Type:</label>
@@ -159,13 +167,6 @@ const AddItem = () => {
                         />
 
                         <label className="block font-medium mt-4">Image:</label>
-                        <input
-                            type="file"
-                            name="image"
-                            onChange={handleChange}
-                            className="w-full mt-2 px-3 py-2 border rounded-lg mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            accept="image/*"
-                        />
 
                             {input.image ? (
                                 <div className="flex justify-center my-3">
@@ -173,14 +174,32 @@ const AddItem = () => {
                                 </div>
                             ) : input.image_url ? (
                                 <div className="flex justify-center my-3">
-                                    <img src={input.image_url} alt="Predefined" className="w-24 h-24 object-cover rounded-lg shadow-md" />
+                                    <img src={input.image_url} alt="Predefined" className="w-40 ml-28 mr-28 h-24 object-cover rounded-lg shadow-md" />
                                 </div>
-                            ) : null}
+                            ) : (
+                                <div className="w-24 h-24 flex items-center justify-center bg-gray-200 rounded-lg shadow-md">
+                                     <span className="text-gray-500">No Image</span>
+                                </div>
+                            )}
+
+
+                            {!input.image_url && (
+                                <>
+                                    <label className="block font-medium mt-4">Upload Image:</label>
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        onChange={handleChange}
+                                        className="w-full mt-2 px-3 py-2 border rounded-lg mb-5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        accept="image/*"
+                                    />
+                                </>
+                            )}
 
 
                         <button
                             type="submit"
-                            className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                            className="mt-4 w-full bg-blue-600   text-white py-2 rounded-lg hover:bg-blue-700 transition"
                             disabled={mutation.isPending}
                         >
                             {mutation.isPending ? "Submitting..." : "Submit"}

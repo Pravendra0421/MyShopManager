@@ -6,8 +6,10 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Logout from "./pages/Logout";
 import AddItem from "./pages/AddItem";
+import UpdateDelete from "./pages/updateDelete";
+import SellItem from "./pages/SellItem";
 
-function App() {
+const App=()=> {
   return (
     <Router>
       <Routes>
@@ -19,7 +21,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/additem" element={<AddItem/>}/>
+          <Route path="/updateDelete/:id" element={<UpdateDelete />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/demo" element={<SellItem/>} />
         </Route>
       </Routes>
     </Router>

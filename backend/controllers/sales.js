@@ -1,56 +1,73 @@
 import supabase from "../database/supabase.js";
-//sell item 
-export const sellItem = async(req,res)=>{
-    const {id,quantity}=req.body;
-    const {data:item,error}=await supabase.from('items').select('*').eq('id',id).single();
-    if(error ||!item){
-        return res.status(404).json({
-            error:"item not found"
-        })
+
+export const sellItem = async (req, res) => {
+    const { id, quantity } = req.body;
+
+    const { data: item, error } = await supabase
+        .from("items")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error || !item) {
+        return res.status(404).json({ error: "Item not found" });
     }
-    if(item.stock<quantity){
-        return res.status(404).json({
-            error:"item not found"
-        })
+
+    if (item.stock < quantity) {
+        return res.status(400).json({ error: "Not enough stock available" });
     }
-    const newStock=item.stock - quantity;
-    const revenue=item.price*quantity;
-    const {error:updateError} = await supabase.from('items').update({stock:newStock}).eq('id',id);
-    if(updateError){
-        return res.status(404).json({
-            error:updateError.message
-        })
+
+    // Calculate new stock and revenue
+    const newStock = item.stock - quantity;
+    const revenue = item.price * quantity;
+
+    // Update stock
+    const { error: updateError } = await supabase
+        .from("items")
+        .update({ stock: newStock })
+        .eq("id", id);
+
+    if (updateError) {
+        return res.status(500).json({ error: "Failed to update stock" });
     }
-    const {error:salesError} = await supabase.from('sales').insert([{item_id:id,quantity,revenue}]);
-    if(salesError){
-        return res.status(404).json({
-            error:salesError.message
-        })
+
+    // Insert sales record
+    const { error: salesError } = await supabase
+        .from("sales")
+        .insert([{ item_id: id, quantity, revenue }]);
+
+    if (salesError) {
+        return res.status(500).json({ error: "Failed to record sale" });
     }
-    res.json({
-        message:'sales successful',newStock,revenue
-    })
+
+    res.json({ message: "Sale successful", newStock, revenue });
 };
-//fetch total revenue
-export const getTotalRevenue=async(req,res)=>{
-    const {data,error} =await supabase.from('sales').select(revenue);
-    if(error){
-        return res.status(404).json({
-            error:salesError.message
-        })
+
+// ✅ Fetch total revenue
+export const getTotalRevenue = async (req, res) => {
+    const { data, error } = await supabase.from("sales").select("revenue");
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
     }
-    const totalRevenue= data.reduce((acc,sale)=>acc+parseFloat(sale.revenue),0);
-    res.json({totalRevenue});
-}
-// fetch last 7 day data
-export const getLast7DaySales=async (req,res)=>{
-    const sevenDayAgo=new Date();
-    sevenDayAgo.setDate(sevenDayAgo.getDate()-7);
-    const {data,error} = await supabase.from('sales').select('quantity,revenue,date').gte('date',sevenDayAgo.toISOString());
-    if(error){
-        return res.status(404).json({
-            error:salesError.message
-        })
+
+    const totalRevenue = data.reduce((acc, sale) => acc + parseFloat(sale.revenue), 0);
+    res.json({ totalRevenue });
+};
+
+// ✅ Fetch last 7 days of sales
+export const getLast7DaySales = async (req, res) => {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const { data, error } = await supabase
+        .from("sales")
+        .select("quantity, revenue, date")
+        .gte("date", sevenDaysAgo.toISOString());
+
+    if (error) {
+        return res.status(500).json({ error: error.message });
     }
+
     res.json(data);
-}
+};

@@ -1,19 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import Navbar from "./Navbar";
-
-interface Item {
-  id: string;
-  name: string;
-  price: number;
-  stock: number;
-  image_url?: string;
-}
-
-const fetchItems = async (): Promise<Item[]> => {
-  const response = await axios.get<Item[]>("http://localhost:3000/item/");
-  return response.data;
-};
+import { fetchItems, Item } from "../services/Api";
+import { useNavigate } from "react-router-dom";
+import SellItem from "./SellItem";
 
 const Dashboard: React.FC = () => {
   const { data: items, isLoading, error } = useQuery<Item[], Error>({
@@ -23,6 +12,11 @@ const Dashboard: React.FC = () => {
     refetchOnWindowFocus: false, // Do not refetch when switching tabs
     retry: 2, // Retry failed requests 2 times
   });
+
+  const navigate = useNavigate();
+  const handleClick = (id: string) => {
+    navigate(`/updateDelete/${id}`);
+  };
 
   return (
     <>
@@ -40,17 +34,23 @@ const Dashboard: React.FC = () => {
           ) : (
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {items.map((item) => (
-                <li key={item.id} className="p-4 border text-center rounded-lg shadow-md bg-gray-50">
-                  {item.image_url && (
-                    <img
-                      src={item.image_url}
-                      alt={item.name}
-                      className="w-10 h-10 mx-auto object-cover rounded-lg mt-3"
-                    />
-                  )}
-                  <h3 className="font-bold text-lg">{item.name}</h3>
-                  <p className="text-sm text-gray-600">Price: ₹{item.price}</p>
-                  <p className="text-sm text-gray-600">Stock: {item.stock}</p>
+                <li
+                  key={item.id}
+                  className="p-4 border text-center rounded-lg shadow-md bg-gray-50"
+                >
+                  <div className="mb-6" onClick={() => handleClick(item.id)}>
+                    {item.image_url && (
+                      <img
+                        src={item.image_url}
+                        alt={item.name}
+                        className="w-10 h-10 mx-auto object-cover rounded-lg mt-3"
+                      />
+                    )}
+                    <h3 className="font-bold text-lg">{item.name}</h3>
+                    <p className="text-sm text-gray-600">Price: ₹{item.price}</p>
+                    <p className="text-sm text-gray-600">Stock: {item.stock}</p>
+                  </div>
+                  <SellItem id={item.id} />
                 </li>
               ))}
             </ul>
