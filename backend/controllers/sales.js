@@ -55,19 +55,50 @@ export const getTotalRevenue = async (req, res) => {
     res.json({ totalRevenue });
 };
 
+export const getTodaySales = async(req,res)=>{
+    const today = new Date();
+    today.setHours(0,0,0,0); // reset to start of the day
+    const {data,error} = await supabase
+    .from("sales")
+    .select("quantity,revenue,date,items(name)")
+    .gte("date",today.toISOString())
+    .order("date",{ascending:false});
+if(error){
+    return res.status(500).json({error:error.message})
+}
+res.json(data);
+};
+
+
 // ✅ Fetch last 7 days of sales
 export const getLast7DaySales = async (req, res) => {
     const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // Start from 6 days ago to today
 
     const { data, error } = await supabase
         .from("sales")
-        .select("quantity, revenue, date")
-        .gte("date", sevenDaysAgo.toISOString());
+        .select("revenue, date");
 
     if (error) {
         return res.status(500).json({ error: error.message });
     }
 
-    res.json(data);
+    // Group revenue by date
+    const revenueByDay = {};
+    for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateString = date.toISOString().split("T")[0]; // Format YYYY-MM-DD
+        revenueByDay[dateString] = 0; // Default revenue 0
+    }
+
+    // Sum revenue for each day
+    data.forEach((sale) => {
+        const saleDate = new Date(sale.date).toISOString().split("T")[0];
+        if (revenueByDay[saleDate] !== undefined) {
+            revenueByDay[saleDate] += parseFloat(sale.revenue);
+        }
+    });
+
+    res.json(revenueByDay);
 };

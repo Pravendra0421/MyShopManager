@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "./Button";
 import axios from "axios";
 interface SellItemProps{
-  id:string;
+  id?:string;
 }
 
 const SellItem: React.FC<SellItemProps> = ({id}) => {

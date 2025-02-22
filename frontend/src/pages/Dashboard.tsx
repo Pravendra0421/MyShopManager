@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { fetchItems, Item } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 import SellItem from "./SellItem";
+import Revenue from "./Revenue";
 
 const Dashboard: React.FC = () => {
   const { data: items, isLoading, error } = useQuery<Item[], Error>({
@@ -57,6 +58,7 @@ const Dashboard: React.FC = () => {
           )}
         </div>
       </div>
+      <Revenue/>
     </>
   );
 };
