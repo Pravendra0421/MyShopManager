@@ -43,5 +43,22 @@ export const updateItem = async (id: string, updatedData: { price: number; stock
     return response.data;
   };
 
+  export const sellItem = async (id: string, quantity: number): Promise<any> => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/sales/sell`,
+        { id, quantity },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error selling item:", error);
+      throw error; // Rethrow error for handling in components
+    }
+  };
 
   

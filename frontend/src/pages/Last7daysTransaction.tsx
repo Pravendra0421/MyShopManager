@@ -36,7 +36,7 @@ const Last7daysTransaction = () => {
             <TodaySell/>
 
             {/* Chart Section (No Scroll) */}
-            <div className="mt-4 w-full flex-grow">
+            <div className="mt-16 w-full flex-grow">
             <h2 className="text-lg md:text-2xl font-bold text-center text-gray-700 mb-4">
                 Sales Revenue Over the Last 7 Days
             </h2>

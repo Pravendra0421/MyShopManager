@@ -9,7 +9,6 @@ const TodaySell = () => {
         async function fetchToday(){
             try {
                 const response = await axios.get("http://localhost:3000/sales/today");
-                console.log(response.data);
                 setTransactions(response.data);
             } catch (error) {
                 console.log(error);
@@ -19,7 +18,7 @@ const TodaySell = () => {
     },[]);
   return (
     <>
-    <h1 className="text-xl md:text-3xl font-bold text-center text-gray-800 mb-4">
+    <h1 className="text-xl md:text-3xl font-bold text-center mt-10 text-gray-800 mb-4">
         Today Transactions
     </h1>
 

@@ -4,6 +4,7 @@ import { fetchItems, Item } from "../services/Api";
 import { useNavigate } from "react-router-dom";
 import SellItem from "./SellItem";
 import Revenue from "./Revenue";
+import Loader from "../common/Loading";
 
 const Dashboard: React.FC = () => {
   const { data: items, isLoading, error } = useQuery<Item[], Error>({
@@ -23,11 +24,11 @@ const Dashboard: React.FC = () => {
     <>
       <Navbar />
       <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-        <div className="max-w-6xl w-full bg-white text-center rounded-2xl shadow-lg p-6">
+        <div className="max-w-6xl w-full bg-white text-center items-center rounded-2xl shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6 text-center">Item List</h2>
 
           {isLoading ? (
-            <p className="text-center">Loading...</p>
+            <div className="flex items-center justify-center min-h-[300px]"><Loader/></div>
           ) : error ? (
             <p className="text-red-500 text-center">Error: {error.message}</p>
           ) : items?.length === 0 ? (
@@ -48,7 +49,7 @@ const Dashboard: React.FC = () => {
                       />
                     )}
                     <h3 className="font-bold text-lg">{item.name}</h3>
-                    <p className="text-sm text-gray-600">Price: ₹{item.price}</p>
+                    <p className="text-sm text-gray-600">Price: ${item.price}</p>
                     <p className="text-sm text-gray-600">Stock: {item.stock}</p>
                   </div>
                   <SellItem id={item.id} />

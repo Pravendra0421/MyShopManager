@@ -18,7 +18,7 @@ const Revenue = () => {
             }
         }
         fetchData();
-    }, []);
+    }, [revenue]);
 
     return (
         <div className="flex justify-center bg-gray-100 p-4">
@@ -27,7 +27,7 @@ const Revenue = () => {
 
                 {/* Show loading indicator or revenue amount */}
                 <div className="mt-6 bg-green-300 font-bold text-4xl p-4 rounded-lg">
-                    {loading ? "Loading..." : `$${revenue?.toLocaleString()}`}
+                    {loading ? ("Loading...") : `$${revenue?.toLocaleString()}`}
                 </div>
                 <Last7daysTransaction/>
             </div>
