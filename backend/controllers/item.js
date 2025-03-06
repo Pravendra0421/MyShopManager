@@ -9,7 +9,12 @@ const upload = multer({ storage });
 
 //fetch all item
 export const getAllitems= async(req,res)=>{
-    const {data,error }= await supabase.from('items').select('*');
+    try{
+        const user_id=req.user.id;
+        if(!user_id){
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+        const {data,error }= await supabase.from('items').select('*').eq("user_id",user_id);
     if(error){
         return res.status(500).json({
             success:false,
@@ -19,11 +24,18 @@ export const getAllitems= async(req,res)=>{
     else{
         res.json(data);
     }
+    }catch(error){
+        return res.status(500).json({
+            success:false,
+            message:"internal server error"
+        })
+    }
 };
 export const getItemById = async (req, res) => {
     try {
+        const user_id=req.user.id;
         const { id } = req.params;
-        const { data, error } = await supabase.from("items").select("*").eq("id", id).single();
+        const { data, error } = await supabase.from("items").select("*").eq("id", id).eq("user_id",user_id).single();
 
         if (error || !data) {
             return res.status(404).json({ success: false, message: "Item not found" });
@@ -37,6 +49,7 @@ export const getItemById = async (req, res) => {
 // add new item 
 export const addItem = async (req, res) => {
     try {
+        const user_id = req.user.id;
         const { name, price, stock, image_url } = req.body;
         let imageUrl = image_url || ""; // Use predefined image URL if provided
 
@@ -62,7 +75,7 @@ export const addItem = async (req, res) => {
         }
 
         // Insert item into Supabase
-        const { error } = await supabase.from("items").insert([{ name, price, stock, image_url: imageUrl }]);
+        const { error } = await supabase.from("items").insert([{ name, price, stock, image_url: imageUrl,user_id }]);
 
         if (error) {
             return res.status(500).json({ success: false, error: error.message });
@@ -78,10 +91,13 @@ export const addItem = async (req, res) => {
 export const uploadImage = upload.single("image");
 //update an item 
 export const updateItem = async (req, res) => {
+    const user_id = req.user.id;
     const { id } = req.params;
     const { name, price, stock, image_url } = req.body;
     let imageUrl = image_url || "";
-
+    if (!user_id) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
     // If a new image file is uploaded
     if (req.file) {
         try {
@@ -107,7 +123,8 @@ export const updateItem = async (req, res) => {
     const { error } = await supabase
         .from('items')
         .update({ name, price, stock, image_url: imageUrl })
-        .eq('id', id);
+        .eq('id', id)
+        .eq("user_id",user_id);
 
     if (error) {
         return res.status(500).json({ success: false, error: error.message });
@@ -119,10 +136,14 @@ export const updateItem = async (req, res) => {
 //delete an item
 export const deleteItem = async (req, res) => {
     try {
+        const user_id = req.user.id;
         const { id } = req.params;
+        if (!user_id) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
 
         // Fetch the item to get its image URL
-        const { data: item, error: fetchError } = await supabase.from("items").select("image_url").eq("id", id).single();
+        const { data: item, error: fetchError } = await supabase.from("items").select("image_url").eq("id", id).eq("user_id",user_id).single();
         if (fetchError || !item) {
             return res.status(404).json({ success: false, message: "Item not found" });
         }
@@ -138,7 +159,7 @@ export const deleteItem = async (req, res) => {
         }
 
         // Delete the item from Supabase
-        const { error } = await supabase.from('items').delete().eq('id', id);
+        const { error } = await supabase.from('items').delete().eq('id', id).eq("user_id",user_id);
         if (error) {
             return res.status(500).json({ success: false, error: error.message });
         }

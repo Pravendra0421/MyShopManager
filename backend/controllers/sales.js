@@ -2,7 +2,7 @@ import supabase from "../database/supabase.js";
 
 export const sellItem = async (req, res) => {
     const { id, quantity } = req.body;
-
+    const user_id=req.user.id;
     const { data: item, error } = await supabase
         .from("items")
         .select("*")
@@ -34,7 +34,7 @@ export const sellItem = async (req, res) => {
     // Insert sales record
     const { error: salesError } = await supabase
         .from("sales")
-        .insert([{ item_id: id, quantity, revenue }]);
+        .insert([{ item_id: id, quantity, revenue,user_id }]);
 
     if (salesError) {
         return res.status(500).json({ error: "Failed to record sale" });
@@ -45,7 +45,8 @@ export const sellItem = async (req, res) => {
 
 // ✅ Fetch total revenue
 export const getTotalRevenue = async (req, res) => {
-    const { data, error } = await supabase.from("sales").select("revenue");
+    const user_id=req.user.id;
+    const { data, error } = await supabase.from("sales").select("revenue").eq("user_id",user_id);
 
     if (error) {
         return res.status(500).json({ error: error.message });
@@ -56,11 +57,13 @@ export const getTotalRevenue = async (req, res) => {
 };
 
 export const getTodaySales = async(req,res)=>{
+    const user_id=req.user.id
     const today = new Date();
     today.setHours(0,0,0,0); // reset to start of the day
     const {data,error} = await supabase
     .from("sales")
     .select("quantity,revenue,date,items(name)")
+    .eq("user_id",user_id)
     .gte("date",today.toISOString())
     .order("date",{ascending:false});
 if(error){
@@ -72,12 +75,14 @@ res.json(data);
 
 // ✅ Fetch last 7 days of sales
 export const getLast7DaySales = async (req, res) => {
+    const user_id=req.user.id;
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // Start from 6 days ago to today
 
     const { data, error } = await supabase
         .from("sales")
-        .select("revenue, date");
+        .select("revenue, date")
+        .eq("user_id",user_id);
 
     if (error) {
         return res.status(500).json({ error: error.message });

@@ -15,14 +15,14 @@ const App = () => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    const hasVisited = localStorage.getItem("hasVisited");
+    const hasVisited = sessionStorage.getItem("hasVisited");
 
     if (!hasVisited) {
       setLoading(true);
 
       const timer = setTimeout(() => {
         setLoading(false);
-        localStorage.setItem("hasVisited", "true"); // Save flag in localStorage
+        sessionStorage.setItem("hasVisited", "true"); // Save flag in sessionStorage
       }, 6000);
 
       return () => clearTimeout(timer);

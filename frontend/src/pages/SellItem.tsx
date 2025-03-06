@@ -17,14 +17,15 @@ const SellItem: React.FC<SellItemProps> = ({id}) => {
         setSell((prevSell) => (prevSell > 0 ? prevSell - 1 : 0)); 
     };
     const mutation = useMutation({
-      mutationFn: () => {
+      mutationFn:async () => {
         if (!id) return Promise.reject(new Error("Missing item ID"));
         if (sell === 0) return Promise.reject(new Error("Cannot sell 0 items"));
         return sellItem(id, sell);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["items"] });
         queryClient.invalidateQueries({ queryKey: ["revenue"] });
+        queryClient.invalidateQueries({ queryKey: ["last7days"] });
+        queryClient.invalidateQueries({ queryKey: ["todaySell"] });
         setSell(0);
       },
     });
