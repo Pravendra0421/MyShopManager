@@ -34,7 +34,7 @@ export const predefineItems: Record<ItemType, { name: string; image: string }[]>
         { name: "Papaya", image: papaya },
         { name: "Banana", image: Banana },
         { name: "Guava", image: guava },
-        { name: "Palmgranets", image: palmgranets },
+        { name: "Pomegranate", image: palmgranets },
         { name: "Pineapple", image: pineapple },
         { name: "Grapes", image: grapes },
         { name: "Peaches", image: peaches },

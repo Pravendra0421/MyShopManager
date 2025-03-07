@@ -26,6 +26,7 @@ const SellItem: React.FC<SellItemProps> = ({id}) => {
         queryClient.invalidateQueries({ queryKey: ["revenue"] });
         queryClient.invalidateQueries({ queryKey: ["last7days"] });
         queryClient.invalidateQueries({ queryKey: ["todaySell"] });
+        queryClient.invalidateQueries({queryKey:["items"]})
         setSell(0);
       },
     });

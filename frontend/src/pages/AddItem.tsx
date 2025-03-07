@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Navbar from "./Navbar";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addItem } from "../services/Api.ts"; 
 import { predefineItems,ItemType } from "../data/data.ts";
-
+import { ToastContainer, toast } from "react-toastify";
 const AddItem = () => {
     const [input, setInput] = useState<{ 
         name: string; 
@@ -71,15 +71,16 @@ const AddItem = () => {
         }));
         setSuggestions([]);
     };
-
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: (formData: FormData) => addItem(formData), 
         onSuccess: () => {
-            alert("Item added successfully!");
+            queryClient.invalidateQueries({queryKey:["items"]});
+            toast.success("✅ Item updated successfully!");
             setInput({ name: "", price: 0, stock: 0, image: null,type:"fruits" });
         },
         onError: () => {
-            alert("Failed to add item!");
+            toast.error("❌ Something went wrong!");
         }
     });
 
@@ -106,6 +107,7 @@ const AddItem = () => {
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="max-w-xl h-auto bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-500 p-6">
                     <h2 className="text-xl text-center mb-6 font-semibold text-gray-800">Add New Item</h2>
+                    <ToastContainer position="top-right" autoClose={3000} />
                     <form onSubmit={handleSubmit} className="mt-4">
                         <label className="block font-medium">Type:</label>
                         <select

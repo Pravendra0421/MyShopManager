@@ -27,7 +27,7 @@ const Last7daysTransaction = () => {
 
   return (
     <motion.div
-      className="h-screen overflow-hidden flex flex-col items-center p-4 md:p-6 w-full"
+      className="min-h-screen flex flex-col items-center p-4 md:p-6 w-full bg-gradient-to-b from-gray-100 to-gray-200"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
@@ -36,36 +36,70 @@ const Last7daysTransaction = () => {
       <TodaySell />
 
       {/* Chart Section */}
-      <div className="mt-16 w-full flex-grow">
+      <div className="mt-6 w-full max-w-4xl bg-white shadow-md rounded-lg p-4 md:p-6">
         <h2 className="text-lg md:text-2xl font-bold text-center text-gray-700 mb-4">
-          Sales Revenue Over the Last 7 Days
+          📊 Sales Revenue Over the Last 7 Days
         </h2>
 
         {/* Handle loading and errors */}
         {isLoading ? (
-          <p className="text-center text-gray-500">Loading chart...</p>
+          <p className="text-center text-gray-500">⏳ Loading chart...</p>
         ) : error ? (
-          <p className="text-center text-red-500">Error loading data</p>
+          <p className="text-center text-red-500">❌ Error loading data</p>
         ) : (
-          <div className="w-full flex justify-center h-72">
+          <div className="w-full flex justify-center h-60 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={data}
-                margin={{ top: 20, right: 20, left: -10, bottom: 50 }}
+                layout="vertical" // Mobile-friendly vertical layout
+                margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
+                <CartesianGrid strokeDasharray="3 3" opacity={0.4} />
+
+                {/* Y-Axis (Date) on the left for mobile readability */}
+                <YAxis
+                  type="category"
                   dataKey="date"
                   tickFormatter={(date) =>
                     new Date(date).toLocaleDateString()
                   }
-                  tick={{ fontSize: 12 }}
-                  angle={-90}
-                  textAnchor="end"
+                  tick={{ fontSize: 12, fill: "#4F46E5" }}
+                  width={70}
                 />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="revenue" fill="#4F46E5" barSize={40} />
+
+                {/* X-Axis (Revenue) on the bottom */}
+                <XAxis
+                  type="number"
+                  tickFormatter={(value) => `$${value}`}
+                  tick={{ fontSize: 12, fill: "#4F46E5" }}
+                />
+
+                <Tooltip
+                  cursor={{ fill: "rgba(79, 70, 229, 0.2)" }}
+                  contentStyle={{
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    border: "none",
+                    boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+                  }}
+                  formatter={(value) => [`$${value}`, "Revenue"]}
+                />
+
+                {/* Bars with Animation */}
+                <Bar
+                  dataKey="revenue"
+                  fill="url(#colorGradient)"
+                  barSize={30} // Adjusted for better mobile visibility
+                  radius={[6, 6, 0, 0]}
+                />
+
+                {/* Gradient Fill for Bars */}
+                <defs>
+                  <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#4F46E5" stopOpacity={0.9} />
+                    <stop offset="100%" stopColor="#6366F1" stopOpacity={0.5} />
+                  </linearGradient>
+                </defs>
               </BarChart>
             </ResponsiveContainer>
           </div>

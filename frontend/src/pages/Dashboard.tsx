@@ -10,9 +10,8 @@ const Dashboard: React.FC = () => {
   const { data: items, isLoading, error } = useQuery<Item[], Error>({
     queryKey: ["items"],
     queryFn: fetchItems,
-    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
-    refetchOnWindowFocus: false, // Do not refetch when switching tabs
-    retry: 2, // Retry failed requests 2 times
+    refetchOnWindowFocus: false,
+    retry: 2,
   });
 
   const navigate = useNavigate();
@@ -21,46 +20,66 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="w-full max-w-[100vw] overflow-x-hidden">
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-        <div className="max-w-6xl w-full bg-white text-center items-center rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold mb-6 text-center">Item List</h2>
+      <div className="flex flex-col items-center min-h-screen bg-gray-100 p-4">
+        <div className="max-w-6xl w-full bg-white rounded-2xl shadow-lg p-4 md:p-6">
+          {/* Header */}
+          <h2 className="text-lg md:text-2xl font-bold text-gray-800 text-center mb-4">
+            📦 Item List
+          </h2>
 
+          {/* Loader */}
           {isLoading ? (
-            <div className="flex items-center justify-center min-h-[300px]"><Loader/></div>
+            <div className="flex items-center justify-center min-h-[300px]">
+              <Loader />
+            </div>
           ) : error ? (
-            <p className="text-red-500 text-center">Error: {error.message}</p>
+            <p className="text-red-500 text-center">❌ Error: {error.message}</p>
           ) : items?.length === 0 ? (
-            <p className="text-center">No items available.</p>
+            <p className="text-center text-gray-600">No items available.</p>
           ) : (
-            <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <ul className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
               {items.map((item) => (
                 <li
                   key={item.id}
-                  className="p-4 border text-center rounded-lg shadow-md bg-gray-50"
+                  className="p-3 sm:p-4 border rounded-xl shadow-md bg-gray-50 transition-all hover:shadow-lg hover:bg-gray-100"
                 >
-                  <div className="mb-6" onClick={() => handleClick(item.id)}>
+                  {/* Clickable Section */}
+                  <div
+                    className="cursor-pointer flex flex-col items-center space-y-2"
+                    onClick={() => handleClick(item.id)}
+                  >
                     {item.image_url && (
                       <img
                         src={item.image_url}
                         alt={item.name}
-                        className="w-10 h-10 mx-auto object-cover rounded-lg mt-3"
+                        className="w-16 h-16 object-cover rounded-lg"
                       />
                     )}
-                    <h3 className="font-bold text-lg">{item.name}</h3>
-                    <p className="text-sm text-gray-600">Price: ${item.price}</p>
-                    <p className="text-sm text-gray-600">Stock: {item.stock}</p>
+                    <h3 className="font-semibold text-sm sm:text-base md:text-lg">
+                      {item.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      💰 Price: <span className="font-semibold">${item.price}</span>
+                    </p>
+                    <p className="text-xs sm:text-sm text-gray-600">
+                      📦 Stock: <span className="font-semibold">{item.stock}</span>
+                    </p>
                   </div>
-                  <SellItem id={item.id} />
+
+                  {/* Sell Button */}
+                  <div className="mt-2 sm:mt-4">
+                    <SellItem id={item.id} />
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
       </div>
-      <Revenue/>
-    </>
+      <Revenue />
+    </div>
   );
 };
 
