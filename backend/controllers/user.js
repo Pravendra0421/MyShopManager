@@ -31,22 +31,3 @@ export const logout = async (req, res) => {
     res.json({ message: "Logout successful" });
 };
 
-//Email confirmation controller
-// export const confirmEmail = async (req, res) => {
-//     const { token } = req.query;
-    
-//     if (!token) {
-//         return res.status(400).json({ error: "Invalid or missing confirmation token" });
-//     }
-
-//     // Verify token and get user details
-//     const { data: user, error } = await supabase.auth.getUser(token);
-
-//     if (error || !user) {
-//         return res.status(400).json({ error: "Email confirmation failed or already verified" });
-//     }
-
-//     // Redirect to frontend login page with confirmation flag
-//     res.redirect("http://localhost:5173/?confirmed=true");
-// };
-
