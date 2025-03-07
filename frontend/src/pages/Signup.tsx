@@ -2,14 +2,14 @@ import image2 from '../assets/ez-logo.jpg';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { signUp } from '../services/Api';
 
 const SignUp = () => {
   const [input1, setInput1] = useState<{ email: string; password: string }>({
     email: "",
     password: "",
   });
-
+  const [loading,setLoading]=useState(false);
   const [message, setMessage] = useState<string | null>(null); // To show success/error messages
   const navigate=useNavigate();
   // Handle input changes
@@ -20,11 +20,10 @@ const SignUp = () => {
   // Handle form submission
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission behavior
-  
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:3000/auth/signup", input1);
+      await signUp(input1);    
       setMessage("Signup successful!");
-      console.log("Signup successful:", response.data);
   
       // Redirect to Email Confirmation Page with Email as Query Parameter
       navigate(`/emailconfirmation?email=${input1.email}`);
@@ -32,27 +31,15 @@ const SignUp = () => {
       setMessage("Signup failed. Please try again.");
       console.error("Signup error:", error);
     }
+    finally{
+      setLoading(false);
+    }
   };
   
 
   useEffect(() => {
     // console.log("User input changed:", input1);
   }, [input1]); // Runs when input1 changes
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await axios.post("http://localhost:3000/auth/signup");
-        if (response.data.isAuthenticated) {
-          setMessage("You are already logged in!");
-        }
-      } catch (error) {
-        console.log("User not authenticated, proceeding with signup.");
-      }
-    };
-
-    checkAuthStatus();
-  }, []); // Runs only once when component mounts
 
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row items-center justify-center bg-[#1f4470] relative">
@@ -100,7 +87,7 @@ const SignUp = () => {
             type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md mt-4 hover:bg-blue-600"
           >
-            Sign Up
+            {loading?"please wait ...":"SignUp"}
           </button>
         </form>
 

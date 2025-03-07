@@ -1,13 +1,13 @@
-
+import { login } from '../services/Api';
 import { useState } from 'react';
 import image2 from '../assets/ez-logo.jpg';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 const Login = () => {
   const [input1, setinput1]=useState<{email:string,password:string}>({
     email:"",
     password:""
   });
+  const [loading,setLoading]=useState(false);
   const navigate=useNavigate();
   const changeEventHandler=(e:React.ChangeEvent<HTMLInputElement>)=>{
     setinput1({...input1,[e.target.name]:e.target.value});
@@ -15,14 +15,17 @@ const Login = () => {
   };
   const submitHandler = async(e:React.FormEvent)=>{
     e.preventDefault();
+    setLoading(true);
     // console.log(input1);
     try {
-      const Response=await axios.post("http://localhost:3000/auth/login",input1);
-      localStorage.setItem("token",Response.data.accessToken);
-      // console.log("signup successfull:",Response.data);
+      const Response=await login(input1);
+      localStorage.setItem("token",Response.accessToken);
       navigate('/')
     } catch (error) {
       console.log(error);
+    }
+    finally{
+      setLoading(false);
     }
   }
   return (
@@ -71,7 +74,7 @@ const Login = () => {
             type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md mt-4 hover:bg-blue-600"
           >
-            Login
+            {loading?"logining in ....":"Login"}
           </button>
         </form>
 

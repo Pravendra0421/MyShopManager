@@ -7,7 +7,14 @@ export interface Item {
   stock: number;
   image_url?: string;
 }
-
+export const login=async(inputData:{email:string,password:string}):Promise<any>=>{
+  const response = await api.post("/auth/login",inputData);
+  return response.data;
+}
+export const signUp=async(inputData:{email:string,password:string}):Promise<any>=>{
+  const response = await api.post("/auth/signup",inputData);
+  return response.data;
+}
 export const addItem = async (formData: FormData): Promise<any> => {
   const response = await api.post("/item/add", formData, {
     headers: {
