@@ -11,12 +11,10 @@ const Login = () => {
   const navigate=useNavigate();
   const changeEventHandler=(e:React.ChangeEvent<HTMLInputElement>)=>{
     setinput1({...input1,[e.target.name]:e.target.value});
-    // console.log(input1);
   };
   const submitHandler = async(e:React.FormEvent)=>{
     e.preventDefault();
     setLoading(true);
-    // console.log(input1);
     try {
       const Response=await login(input1);
       localStorage.setItem("token",Response.accessToken);

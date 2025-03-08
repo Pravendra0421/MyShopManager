@@ -1,15 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import EmailConfirmation from "./pages/EmailConfirmation";
-import Dashboard from "./pages/Dashboard";
+import { useEffect, useState, Suspense, lazy } from "react";
 import ProtectedRoute from "./pages/ProtectedRoute";
-import Logout from "./pages/Logout";
-import AddItem from "./pages/AddItem";
-import UpdateDelete from "./pages/updateDelete";
-import SellItem from "./pages/SellItem";
 import Loader from "./common/Loader";
-import { useEffect, useState } from "react";
+
+// Lazy Load Components
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const EmailConfirmation = lazy(() => import("./pages/EmailConfirmation"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Logout = lazy(() => import("./pages/Logout"));
+const AddItem = lazy(() => import("./pages/AddItem"));
+const UpdateDelete = lazy(() => import("./pages/updateDelete"));
+const SellItem = lazy(() => import("./pages/SellItem"));
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ const App = () => {
       const timer = setTimeout(() => {
         setLoading(false);
         sessionStorage.setItem("hasVisited", "true"); // Save flag in sessionStorage
-      }, 6000);
+      }, 3000); // Reduced to 3 seconds for better UX
 
       return () => clearTimeout(timer);
     }
@@ -37,20 +39,22 @@ const App = () => {
         </div>
       ) : (
         <Router>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/emailconfirmation" element={<EmailConfirmation />} />
+          <Suspense fallback={<Loader />}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/emailconfirmation" element={<EmailConfirmation />} />
 
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/additem" element={<AddItem />} />
-              <Route path="/updateDelete/:id" element={<UpdateDelete />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/demo" element={<SellItem />} />
-            </Route>
-          </Routes>
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/additem" element={<AddItem />} />
+                <Route path="/updateDelete/:id" element={<UpdateDelete />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/demo" element={<SellItem />} />
+              </Route>
+            </Routes>
+          </Suspense>
         </Router>
       )}
     </>

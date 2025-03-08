@@ -9,6 +9,7 @@ interface Transaction {
   date: string;
   quantity: number;
   revenue: number;
+  items: { name: string };
 }
 
 const TodaySell = () => {

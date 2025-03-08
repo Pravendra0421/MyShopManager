@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
             <p className="text-center text-gray-600">No items available.</p>
           ) : (
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              {items.map((item) => (
+              {items?.map((item) => (
                 <li
                   key={item.id}
                   className="p-3 sm:p-4 border rounded-xl shadow-md bg-gray-50 transition-all hover:shadow-lg hover:bg-gray-100"

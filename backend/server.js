@@ -4,10 +4,12 @@ import supabase from './database/supabase.js';
 import authRoutes from './routes/AuthRoute.js';
 import itemRoute from './routes/itemRoute.js';
 import salesRoute from './routes/salesRoute.js';
-import cors from 'cors'
+import cors from 'cors';
+import path from 'path';
 dotenv.config();
 const app= express();
 const PORT = process.env.PORT || 5000;
+const _dirname=path.resolve();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
@@ -27,10 +29,10 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
   });
-app.get('/',async (req,res)=>{
-    res.send('hello world');
-});
-
+app.use(express.static(path.join(_dirname,"/frontend/dist")));
+app.get('*',(_,res)=>{
+    res.sendFile(path.resolve(_dirname,"frontend","dist","index.html"));
+})
 app.listen(PORT,()=>{
     console.log(`http://localhost:${PORT}`);
 });
