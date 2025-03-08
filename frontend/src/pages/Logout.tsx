@@ -16,7 +16,7 @@ const Logout = () => {
         }
 
         await axios.post(
-          "http://localhost:3000/auth/logout",
+          "https://myshopmanager.onrender.com/auth/logout",
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

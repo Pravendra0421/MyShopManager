@@ -13,7 +13,7 @@ const _dirname=path.resolve();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
-    origin: 'http://localhost:5173', // Allow frontend origin
+    origin: 'https://myshopmanager.onrender.com', // Allow frontend origin
     methods: ['GET', 'POST','PUT','DELETE'], // Corrected key (methods, not method)
     allowedHeaders: ['Content-Type','Authorization'], // Fixed content-type as a string
     credentials: true, // Allows cookies and authentication headers
