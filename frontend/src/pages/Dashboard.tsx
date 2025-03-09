@@ -70,7 +70,7 @@ const Dashboard: React.FC = () => {
 
                   {/* Sell Button */}
                   <div className="mt-2 sm:mt-4">
-                    <SellItem id={item.id} />
+                    <SellItem id={item.id} stock={item.stock} />
                   </div>
                 </li>
               ))}

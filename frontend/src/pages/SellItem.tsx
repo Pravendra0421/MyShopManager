@@ -4,13 +4,14 @@ import { sellItem } from "../services/Api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 interface SellItemProps{
   id?:string;
+  stock?:number;
 }
 
-const SellItem: React.FC<SellItemProps> = ({id}) => {
+const SellItem: React.FC<SellItemProps> = ({id,stock}) => {
     const [sell, setSell] = useState<number>(0);
     const queryClient = useQueryClient();
     const handleIncrement = () => {
-        setSell((prevSell) => prevSell + 1);
+        setSell((prevSell) =>(prevSell<(stock??0)? prevSell + 1:prevSell));
     };
 
     const handleDecrement = () => {
