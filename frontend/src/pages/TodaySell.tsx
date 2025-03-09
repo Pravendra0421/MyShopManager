@@ -26,7 +26,7 @@ const TodaySell = () => {
 
   return (
     <motion.div
-      className="w-full max-w-5xl p-4 md:p-6 bg-white shadow-lg rounded-xl"
+      className="w-full max-w-[90vw] p-4 md:p-6 bg-white shadow-lg rounded-xl"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

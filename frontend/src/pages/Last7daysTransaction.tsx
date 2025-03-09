@@ -36,7 +36,7 @@ const Last7daysTransaction = () => {
       <TodaySell />
 
       {/* Chart Section */}
-      <div className="mt-6 w-full max-w-4xl bg-white shadow-md rounded-lg p-4 md:p-6">
+      <div className="mt-6 w-full max-w-[90vw] bg-white shadow-md rounded-lg p-4 md:p-6">
         <h2 className="text-lg md:text-2xl font-bold text-center text-gray-700 mb-4">
           📊 Sales Revenue Over the Last 7 Days
         </h2>
@@ -52,7 +52,7 @@ const Last7daysTransaction = () => {
               <BarChart
                 data={data}
                 layout="vertical" // Mobile-friendly vertical layout
-                margin={{ top: 10, right: 20, left: 20, bottom: 10 }}
+                margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
               >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.4} />
 

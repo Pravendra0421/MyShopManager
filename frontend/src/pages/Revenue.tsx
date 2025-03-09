@@ -12,11 +12,11 @@ const Revenue = () => {
 
   return (
     <div className="flex justify-center bg-gray-100 p-4">
-      <div className="max-w-6xl w-full bg-white text-center rounded-2xl shadow-lg p-6">
+      <div className="max-w-6xl w-full bg-white text-center rounded-2xl shadow-lg pt-6">
         <div className="font-bold text-2xl">Total Revenue</div>
 
         {/* Show loading indicator or revenue amount */}
-        <div className="mt-6 bg-green-300 font-bold text-4xl p-4 rounded-lg">
+        <div className="m-6 bg-green-300 font-bold text-4xl p-4 rounded-lg">
           {isLoading
             ? "Loading..."
             : isError
