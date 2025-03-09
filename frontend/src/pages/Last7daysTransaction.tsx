@@ -27,7 +27,7 @@ const Last7daysTransaction = () => {
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center p-4 md:p-6 w-full bg-gradient-to-b from-gray-100 to-gray-200"
+      className="min-h-screen flex flex-col items-center p-4 md:p-6 w-full"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}

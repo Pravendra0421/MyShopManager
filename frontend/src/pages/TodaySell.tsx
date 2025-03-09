@@ -77,11 +77,23 @@ const TodaySell = () => {
                 >
                   <td className="p-3 md:p-4 border border-gray-300">{txn.items.name}</td>
                   <td className="p-3 md:p-4 border border-gray-300">
-                    {new Date(txn.date).toLocaleDateString()} <br />
-                    <span className="text-gray-500 text-xs">
-                      {new Date(txn.date).toLocaleTimeString()}
-                    </span>
-                  </td>
+                      {new Intl.DateTimeFormat("en-AU", {
+                        timeZone: "Australia/Sydney",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }).format(new Date(txn.date + "Z"))}
+                      <br />
+                      <span className="text-gray-500 text-xs">
+                        {new Intl.DateTimeFormat("en-AU", {
+                          timeZone: "Australia/Sydney",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: true,
+                        }).format(new Date(txn.date + "Z"))}
+                      </span>
+                    </td>
                   <td className="p-3 md:p-4 border border-gray-300">
                     {txn.quantity}
                   </td>
