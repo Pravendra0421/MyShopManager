@@ -12,6 +12,8 @@ const Logout = lazy(() => import("./pages/Logout"));
 const AddItem = lazy(() => import("./pages/AddItem"));
 const UpdateDelete = lazy(() => import("./pages/updateDelete"));
 const SellItem = lazy(() => import("./pages/SellItem"));
+const ForgotPassword=lazy(()=>import("./pages/ForgotPassword"));
+const ResetPassword=lazy(()=>import("./pages/ResetPassword"));
 
 const App = () => {
   const [isLoading, setLoading] = useState(false);
@@ -44,6 +46,8 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/emailconfirmation" element={<EmailConfirmation />} />
+              <Route path="/forgot-password" element={<ForgotPassword/>}/>
+              <Route path="/reset-password" element={<ResetPassword/>}/>
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>

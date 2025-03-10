@@ -15,6 +15,14 @@ export const signUp=async(inputData:{email:string,password:string}):Promise<any>
   const response = await api.post("/auth/signup",inputData);
   return response.data;
 }
+export const forgotPassword=async(inputData:{email:string}):Promise<any>=>{
+  const response = await api.post("/auth/forgot-password",inputData);
+  return response.data;
+}
+export const resetPassword=async(inputData:{email:string,accessToken:string,newPassword:string}):Promise<any>=>{
+  const response = await api.post("/auth/reset-password",inputData);
+  return response.data;
+}
 export const addItem = async (formData: FormData): Promise<any> => {
   const response = await api.post("/item/add", formData, {
     headers: {

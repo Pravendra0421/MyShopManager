@@ -1,5 +1,5 @@
 import express from "express";
-import { signUp, login, logout } from "../controllers/user.js";
+import { signUp, login, logout, forgotPassword, resetPassword } from "../controllers/user.js";
 import authMiddleware from "../middleware/AuthMiddleware.js";
 const router = express.Router();
 
@@ -13,6 +13,8 @@ router.options("/logout", (req, res) => {
 router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/logout", logout);
+router.post("/forgot-password",forgotPassword);
+router.post("/reset-password",resetPassword);
 router.get("/verify", authMiddleware, (req, res) => {
   res.json({ success: true, message: "User is authenticated", user: req.user });
 }); 

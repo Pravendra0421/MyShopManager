@@ -67,7 +67,7 @@ const Login = () => {
             onChange={changeEventHandler}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
           />
-
+          <Link className='text-end text-blue-500 underline' to="/forgot-password">forgotPassword?</Link>
           <button
             type="submit"
             className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md mt-4 hover:bg-blue-600"
