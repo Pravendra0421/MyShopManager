@@ -31,7 +31,18 @@ export const addItem = async (formData: FormData): Promise<any> => {
   });
   return response.data;
 };
-
+export const updateProfile=async (formData:FormData):Promise<any>=>{
+  const response = await api.post("/profile/update",formData,{
+    headers:{
+      "Content-Type":"multipart/form-data",
+    }
+  })
+  return response.data;
+}
+export const getProfile=async():Promise<any>=>{
+  const response = await api.get("/profile/getprofile");
+  return response.data;
+}
 export const fetchItems = async (): Promise<Item[]> => {
   const response = await api.get<Item[]>("/item");
   return response.data;

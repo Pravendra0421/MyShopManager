@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState, Suspense, lazy } from "react";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Loader from "./common/Loader";
-
+import Profile from "./pages/Profile/Profile";
+import UpdateProfile from "./pages/Profile/UpdateProfile";
 // Lazy Load Components
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
@@ -56,6 +57,8 @@ const App = () => {
                 <Route path="/updateDelete/:id" element={<UpdateDelete />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/demo" element={<SellItem />} />
+                <Route path="/profile" element={<Profile/>}/>
+                <Route path="/updateProfile" element={<UpdateProfile/>}/>
               </Route>
             </Routes>
           </Suspense>

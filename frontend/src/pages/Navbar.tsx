@@ -12,9 +12,9 @@ const Navbar = () => {
   return (
     <>
       <div className="w-full bg-[#1f4470] p-2 flex justify-between items-center text-white">
-        <div>
+        <Link to='profile'>
           <img src={img1} className="w-12 h-12" />
-        </div>
+        </Link>
 
         <div className="lg:text-4xl text-2xl font-bold">DashBoard</div>
 

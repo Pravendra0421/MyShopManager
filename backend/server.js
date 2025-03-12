@@ -4,6 +4,7 @@ import supabase from './database/supabase.js';
 import authRoutes from './routes/AuthRoute.js';
 import itemRoute from './routes/itemRoute.js';
 import salesRoute from './routes/salesRoute.js';
+import profileRoute from './routes/profileRoute.js';
 import cors from 'cors';
 import path from 'path';
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cors(corsOptions));
 app.use('/auth',authRoutes);
 app.use('/item',itemRoute);
 app.use('/sales',salesRoute);
+app.use('/profile',profileRoute);
 // Add this middleware in your server (Express.js)
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
