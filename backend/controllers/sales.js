@@ -1,5 +1,6 @@
 import supabase from "../database/supabase.js";
-
+import { sendLowStockEmail } from "../services/emailService.js";
+import { io } from "../server.js";
 export const sellItem = async (req, res) => {
     const { id, quantity } = req.body;
     const user_id=req.user.id;
@@ -39,7 +40,23 @@ export const sellItem = async (req, res) => {
     if (salesError) {
         return res.status(500).json({ error: "Failed to record sale" });
     }
-
+    // emit real time update for sales 
+    io.emit("newSale",{
+        itemName:item.name,
+        revenue,
+        quantitySold:quantity,
+        newStock
+    });
+    // Emit real time update for low stock
+    if(newStock<5){
+        io.emit("lowStockAlert",{
+            message:`Item "${item.name}" is running low on stock !`,
+            item_id:id,
+            stock:newStock,
+        });
+        //send low stock email
+        await sendLowStockEmail(req.user.email,item.name,newStock);
+    }
     res.json({ message: "Sale successful", newStock, revenue });
 };
 
